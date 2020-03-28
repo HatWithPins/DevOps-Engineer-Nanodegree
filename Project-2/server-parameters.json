@@ -1,0 +1,14 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdacityProject"
+	},
+	{
+		"ParameterKey": "Bastion",
+		"ParameterValue": "Your private key."
+	},
+	
+	{   "ParameterKey": "PersonalIP",
+		"ParameterValue": "Your personal IP."
+	}
+]
