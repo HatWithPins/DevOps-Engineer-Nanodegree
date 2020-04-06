@@ -9,6 +9,7 @@ pipeline {
       }
       steps {
 	      sh 'pwd'
+	      sh 'ls'
 	      dir('${env.WORKSPACE}/Capstone/Green'){
 		sh 'pwd'
 		sh 'ls'
