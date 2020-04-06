@@ -50,11 +50,6 @@ pipeline {
 	   }
 	  }
 	}
-	stage('Set current kubectl context') {
-	  steps{
-	    sh 'kubectl config use-context arn:aws:eks:us-west-2:013193330021:cluster/Udacity'
-	  }
-	}
 	stage('Deploy green container') {
 	 steps{
 	   sh 'kubectl apply -f ./Green/green-controller.json'
