@@ -8,13 +8,19 @@ pipeline {
         }
       }
       steps {
-        sh 'hadolint Green/Dockerfile'
-	sh 'hadolint Blue/Dockerfile'
+	      dir('${env.WORKSPACE}/Capstone/Green'){
+        	sh 'hadolint Dockerfile'
+	      }
+	      dir('${env.WORKSPACE}/Capstone/Blue'){
+		sh 'hadolint Dockerfile'
+	      }
         }
      }
     stage('Build blue') {
       steps{
-        sh 'docker build --tag=blue Blue/.'
+	      dir('${env.WORKSPACE}/Capstone/Blue'){
+        	sh 'docker build --tag=blue .'
+	      }
       }
     }
 	stage('Push blue') {
@@ -33,12 +39,14 @@ pipeline {
 	}
 	stage('Deploy blue container') {
 	 steps{
-	   sh 'kubectl apply -f ./Blue/blue-controller.json'
+	   sh 'kubectl apply -f ./blue-controller.json'
 	 }
    }
    stage('Build green') {
       steps{
-        sh 'docker build --tag=green Green/.'
+	      dir('${env.WORKSPACE}/Capstone/Green'){
+        	sh 'docker build --tag=green .'
+	      }
       }
     }
 	stage('Push green') {
@@ -52,12 +60,14 @@ pipeline {
 	}
 	stage('Deploy green container') {
 	 steps{
-	   sh 'kubectl apply -f ./Green/green-controller.json'
+	   sh 'kubectl apply -f ./green-controller.json'
 	 }
    }
     stage('Deploy load balancer') {
 	  steps{
-	    sh 'kubectl apply -f ./blue-green-service.json'
+		  dir('${env.WORKSPACE}/Capstone'){
+	    		sh 'kubectl apply -f ./blue-green-service.json'
+		  }
 	  }
 	}
 }
