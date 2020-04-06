@@ -35,6 +35,7 @@ pipeline {
 	}
 	stage('Set current kubectl context') {
 	  steps{
+            sh 'aws eks update-kubeconfig --name Udacity'
 	    sh 'kubectl config use-context arn:aws:eks:us-west-2:013193330021:cluster/Udacity'
 	  }
 	}
