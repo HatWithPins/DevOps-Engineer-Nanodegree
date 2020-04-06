@@ -38,7 +38,7 @@ pipeline {
 	stage('Set current kubectl context') {
 	  steps{
 		dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
-            sh 'aws eks update-kubeconfig --name Udacity'
+            sh 'aws eks update-kubeconfig --name Udacity --role-arn arn:aws:iam::013193330021:role/UdacityEKS'
 	    sh 'kubectl config use-context arn:aws:eks:us-west-2:013193330021:cluster/Udacity'
 		}
 	  }
