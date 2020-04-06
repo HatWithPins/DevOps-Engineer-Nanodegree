@@ -4,7 +4,7 @@ pipeline {
     stage('Linting') {
 	  agent {
         docker {
-            image 'hadolint/hadolint:latest-ubuntu'
+            image 'hadolint/hadolint'
         }
       }
       steps {
