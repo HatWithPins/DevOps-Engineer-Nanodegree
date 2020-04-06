@@ -8,10 +8,7 @@ pipeline {
         }
       }
       steps {
-	      sh 'pwd'
-	      sh 'ls'
-	      sh 'ls /var/lib/jenkins/workspace/Capstone@2/Capstone/Green'
-	      sh 'ls /var/lib/jenkins/workspace/Capstone@2/Capstone/Green@tmp'
+	      
 	      dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Green'){
         	sh 'hadolint Dockerfile'
 	      }
