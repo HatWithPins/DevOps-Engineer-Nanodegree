@@ -1,0 +1,68 @@
+pipeline {
+  agent any
+  stages {
+    stage('Linting') {
+	  agent {
+        docker {
+            image 'hadolint/hadolint:latest-ubuntu'
+        }
+      }
+      steps {
+        sh 'hadolint Green/Dockerfile'
+		sh 'hadolint Blue/Dockerfile'
+        }
+     }
+    stage('Build blue') {
+      steps{
+        sh 'docker build --tag=blue Blue/.'
+      }
+    }
+	stage(Push blue') {
+	  steps{
+	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
+		sh '''
+          docker push hatwithpins/blue:latest
+        '''    
+	   }
+	  }
+	}
+	stage('Set current kubectl context') {
+	  steps{
+	    sh 'kubectl config use-context arn:aws:eks:us-west-2:'
+	  }
+	}
+	stage('Deploy blue container') {
+	 steps{
+	   sh 'kubectl apply -f ./Blue/blue-controller.json'
+	 }
+   }
+   stage('Build green') {
+      steps{
+        sh 'docker build --tag=green Green/.'
+      }
+    }
+	stage(Push green') {
+	  steps{
+	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
+		sh '''
+          docker push hatwithpins/green:latest
+        '''    
+	   }
+	  }
+	}
+	stage('Set current kubectl context') {
+	  steps{
+	    sh 'kubectl config use-context arn:aws:eks:us-west-2:'
+	  }
+	}
+	stage('Deploy green container') {
+	 steps{
+	   sh 'kubectl apply -f ./Green/green-controller.json'
+	 }
+   }
+    stage('Deploy load balancer') {
+	  steps{
+	    sh 'kubectl apply -f ./blue-green-service.json'
+	  }
+	}
+}

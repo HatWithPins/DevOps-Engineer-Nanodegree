@@ -1,0 +1,17 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdacityProject"
+	},
+	{
+		"ParameterKey": "Bastion",
+		"ParameterValue": "Your private key for the jumpbox."
+	},
+	{
+		"ParameterKey": "Jenkins",
+		"ParameterValue": "Your private key for the Jenkins server."
+	},	
+	{   "ParameterKey": "PersonalIP",
+		"ParameterValue": "Your personal IP"
+	}
+]
