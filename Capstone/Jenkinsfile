@@ -27,21 +27,27 @@ pipeline {
 	stage('Push blue') {
 	  steps{
 	    withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){  
+		dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
 		sh 'docker login -u $USERNAME -p $PASSWORD'
 	  	sh 'docker tag blue hatwithpins/blue:latest'
           	sh 'docker push hatwithpins/blue:latest'  
+	    }
 	   }
 	  }
 	}
 	stage('Set current kubectl context') {
 	  steps{
+		dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
             sh 'aws eks update-kubeconfig --name Udacity'
 	    sh 'kubectl config use-context arn:aws:eks:us-west-2:013193330021:cluster/Udacity'
+		}
 	  }
 	}
 	stage('Deploy blue container') {
 	 steps{
+		 dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
 	   sh 'kubectl apply -f blue-controller.json'
+	 }
 	 }
    }
    stage('Build green') {
@@ -54,15 +60,19 @@ pipeline {
 	stage('Push green') {
 	  steps{
 	    withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){  
+		dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Green'){
 		sh 'docker login -u $USERNAME -p $PASSWORD'
 	  	sh 'docker tag blue hatwithpins/green:latest'
           	sh 'docker push hatwithpins/green:latest'  
+		}
 	   }
 	  }
 	}
 	stage('Deploy green container') {
 	 steps{
+	dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Green'){
 	   sh 'kubectl apply -f green-controller.json'
+	}
 	 }
    }
     stage('Deploy load balancer') {
