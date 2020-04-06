@@ -10,19 +10,19 @@ pipeline {
       steps {
 	      sh 'pwd'
 	      sh 'ls'
-	      dir('${env.WORKSPACE}/Capstone/Green'){
+	      dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Green'){
 		sh 'pwd'
 		sh 'ls'
         	sh 'hadolint Dockerfile'
 	      }
-	      dir('${env.WORKSPACE}/Capstone/Blue'){
+	      dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
 		sh 'hadolint Dockerfile'
 	      }
         }
      }
     stage('Build blue') {
       steps{
-	      dir('${env.WORKSPACE}/Capstone/Blue'){
+	      dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Blue'){
         	sh 'docker build --tag=blue .'
 	      }
       }
@@ -48,7 +48,7 @@ pipeline {
    }
    stage('Build green') {
       steps{
-	      dir('${env.WORKSPACE}/Capstone/Green'){
+	      dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/Green'){
         	sh 'docker build --tag=green .'
 	      }
       }
@@ -69,7 +69,7 @@ pipeline {
    }
     stage('Deploy load balancer') {
 	  steps{
-		  dir('${env.WORKSPACE}/Capstone'){
+		  dir('/var/lib/jenkins/workspace/Capstone@2/Capstone/'){
 	    		sh 'kubectl apply -f ./blue-green-service.json'
 		  }
 	  }
