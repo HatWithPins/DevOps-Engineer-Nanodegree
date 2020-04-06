@@ -1,5 +1,8 @@
 pipeline {
   agent any
+	enviroment {
+	 registryCredential = `dockerhub´
+	}
   stages {
     stage('Linting') {
 	  agent {
@@ -26,8 +29,9 @@ pipeline {
     }
 	stage('Push blue') {
 	  steps{
-	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
+	    withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){  
 		sh '''
+		docker login -u $USERNAME -p $PASSWORD
 	  docker tag blue hatwithpins/blue:latest
           docker push hatwithpins/blue:latest
         '''    
