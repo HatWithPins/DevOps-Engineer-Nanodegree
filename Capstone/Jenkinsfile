@@ -8,7 +8,10 @@ pipeline {
         }
       }
       steps {
+	      sh 'pwd'
 	      dir('${env.WORKSPACE}/Capstone/Green'){
+		sh 'pwd'
+		sh 'ls'
         	sh 'hadolint Dockerfile'
 	      }
 	      dir('${env.WORKSPACE}/Capstone/Blue'){
