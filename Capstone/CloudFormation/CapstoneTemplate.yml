@@ -274,9 +274,9 @@ Resources:
       ClusterName: !Ref KubernetesCluster
       NodeRole: arn:aws:iam::013193330021:role/UdacityNodeWorker
       ScalingConfig:
-        MinSize: 3
-        DesiredSize: 5
-        MaxSize: 7
+        MinSize: 2
+        DesiredSize: 2
+        MaxSize: 4
       Subnets:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
@@ -296,29 +296,52 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
+          
+  JenkinsSecGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Allow SSH from your personal IP to the Jenkins server.
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref PersonalIP
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
   JenkinsInstance:
     Type: 'AWS::EC2::Instance'
     Properties:
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash
-          apt-get update
-          apt-get upgrade
-          apt-get install default-jdk
-          sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt-get install default-jdk -y
+          sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+          sudo apt-install awscli python3-pip -y
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
           sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
           sudo apt update
-          sudo apt install docker-ce
-          sudo apt install jenkins
+          sudo apt install docker-ce -y
+          sudo apt install jenkins -y
           sudo systemctl status jenkins
+          pip- install --upgrade --user awscli
+          aws eks update-kubeconfig --name Udacity
+          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+          echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
       AvailabilityZone: us-west-2a
       InstanceType: t2.micro
       KeyName: !Ref Jenkins
       SecurityGroupIds: 
-        - Ref: BastionSecGroup
+        - Ref: JenkinsSecGroup
       BlockDeviceMappings:
         - DeviceName: /dev/sdk
           Ebs:
