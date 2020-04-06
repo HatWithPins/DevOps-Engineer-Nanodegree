@@ -9,7 +9,7 @@ pipeline {
       }
       steps {
         sh 'hadolint Green/Dockerfile'
-		sh 'hadolint Blue/Dockerfile'
+	sh 'hadolint Blue/Dockerfile'
         }
      }
     stage('Build blue') {
@@ -17,7 +17,7 @@ pipeline {
         sh 'docker build --tag=blue Blue/.'
       }
     }
-	stage(Push blue') {
+	stage('Push blue') {
 	  steps{
 	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
 		sh '''
@@ -41,7 +41,7 @@ pipeline {
         sh 'docker build --tag=green Green/.'
       }
     }
-	stage(Push green') {
+	stage('Push green') {
 	  steps{
 	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
 		sh '''
