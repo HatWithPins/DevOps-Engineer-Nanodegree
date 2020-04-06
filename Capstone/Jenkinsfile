@@ -28,6 +28,7 @@ pipeline {
 	  steps{
 	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
 		sh '''
+	  docker tag blue hatwithpins/blue:latest
           docker push hatwithpins/blue:latest
         '''    
 	   }
@@ -54,6 +55,7 @@ pipeline {
 	  steps{
 	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){  
 		sh '''
+		docker tag green hatwithpins/green:latest
           docker push hatwithpins/green:latest
         '''    
 	   }
