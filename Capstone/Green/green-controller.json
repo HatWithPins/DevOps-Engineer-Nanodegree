@@ -21,7 +21,7 @@
          "spec":{
             "containers":[
                {
-                  "name":"blue",
+                  "name":"green",
                   "image":"hatwithpins/green",
                   "ports":[
                      {
